@@ -1,0 +1,53 @@
+Column_Name,Description,Data_Type,Survey_Section,ML_Role
+Respondent_ID,Unique ID for each respondent,String,N/A,—
+Q1_Role,Job role of respondent,Categorical,A,Clustering feature
+Q2_OrgType,Type of organisation,Categorical,A,Clustering target dimension
+Q3_OrgSize,Number of employees,Ordinal,A,Clustering + Regression feature
+Q4_Region,Geographic region,Categorical,A,Clustering feature
+Q5_AnnualRevenue,Org annual revenue band,Ordinal,A,Regression feature
+Q6_MarketingBudget,Annual marketing budget band,Ordinal,B,Regression feature
+Q7_DataSources,Data sources currently used (multi-select),Multi-label,B,ARM itemset
+Q8_AnalyticsTools,Analytics tools in use (multi-select),Multi-label,B,ARM itemset + Clustering
+Q9_CampaignStrategies,Campaign strategies used (multi-select),Multi-label,B,ARM itemset
+Q10_SuccessMetrics,How success is measured (multi-select),Multi-label,B,ARM itemset
+Q11_EIAwareness,Awareness of Emotional AI,Ordinal,C,Classification feature
+Q12_EmotionalInsightRating,"Self-rated emotional insight capability (1-5, noisy)",Numeric,C,Regression + Classification feature
+Q13_MarketingChallenges,Top marketing challenges (multi-select),Multi-label,C,ARM itemset
+Q14_CrisisFrequency,How often negative sentiment crises occur,Ordinal,C,Classification + Clustering feature
+Q15_CampaignBackfire,Whether campaign has emotionally backfired,Ordinal,C,Classification feature
+Q16_FeatureInterest,EmotionOS features of interest (multi-select),Multi-label,D,ARM TARGET itemset
+Q17_PreferredChannels,Data channels to analyse (multi-select),Multi-label,D,ARM itemset
+Q18_RegionalLanguageImportance,Importance of regional language NLP,Ordinal,D,Clustering feature
+Q19_PreferredOutputFormat,Preferred output formats (multi-select),Multi-label,D,ARM itemset
+Q20_WhiteLabelInterest,Interest in white-label version,Categorical,D,Classification feature
+Q21_CurrentSaaSSpend,Current monthly SaaS tool spend,Ordinal,E,Regression feature
+Q22_PreferredPricingModel,Preferred pricing model,Categorical,E,Clustering feature
+Q23_BudgetBand,Budget band for EmotionOS (categorical),Ordinal,E,Regression feature
+Q23_BudgetINR_Numeric,"Monthly budget in INR (numeric, noisy) ★",Numeric,E,★ REGRESSION TARGET
+Q_DecisionStyle,How decisions are primarily made,Categorical,F,Clustering + Classification feature
+Q_TechAdoptionProfile,Technology adoption personality,Ordinal,F,Classification + Clustering feature
+Q_AITrustLevel,Level of trust in AI-generated insights,Ordinal,F,Classification feature
+Q_EmotionalDataImportance,Likert: emotional data = financial data (1-5),Numeric,F,Regression feature
+Q_BrandVsRevenuePriority,Likert: brand perception vs revenue (1-5),Numeric,F,Clustering feature
+Q_BudgetAuthority,Who approves SaaS purchases,Categorical,G,Clustering feature
+Q_StakeholderCount,Number of stakeholders in purchase decision,Ordinal,G,Regression feature (sales cycle proxy)
+Q_AdoptionTrigger,What triggers tool evaluation,Categorical,G,Classification feature
+Q_InternalBarrier,Biggest internal adoption barrier,Categorical,G,Classification feature
+Q_CurrentSentimentTool,Current sentiment/monitoring tool,Categorical,H,Classification + Clustering feature
+Q_CurrentToolSatisfaction,"Satisfaction with current tool (0-5, noisy)",Numeric,H,Classification + Regression feature
+Q_SwitchingIntent,Likelihood to switch to EmotionOS,Ordinal,H,Classification feature
+Q_AdoptionBlockers,What has blocked adoption (multi-select),Multi-label,H,ARM itemset
+Q_AnalyticsReviewFrequency,How often analytics are reviewed,Ordinal,I,Clustering + Regression feature
+Q_AnalyticsTeamSize,Dedicated analytics team size,Ordinal,I,Regression feature
+Q_DataDrivenDecisionPct,% of decisions that are data-driven (noisy),Numeric,I,Regression feature
+Q_CrisisResponseTime,Speed of response to negative sentiment,Ordinal,I,Classification feature
+Q_CrisisHistory,Past brand crisis experience,Ordinal,J,Classification feature (high-value)
+Q_CrisisImpactType,Type of impact from past crisis (multi-select),Multi-label,J,ARM itemset
+Q_AnnualCampaigns,"Number of campaigns run annually (numeric, noisy)",Numeric,J,Regression feature
+Q_EmotionalROIMeasured,Whether emotional ROI has been measured,Categorical,J,Classification feature
+Q_RequiredIntegrations,Required tool integrations (multi-select),Multi-label,K,ARM itemset + Clustering
+Q_DataPrivacyConcern,Level of data privacy concern,Ordinal,K,Classification feature
+Q_TeamDataLiteracy,Self-assessed data literacy of team,Ordinal,K,Clustering feature
+Q24_AdoptionLikelihood,Likelihood to adopt EmotionOS ★,5-class Categorical,F,★ CLASSIFICATION TARGET
+Q24_AdoptionLikelihood_Ordinal,Ordinal encoding of adoption likelihood (1-5),Numeric,F,Classification (encoded) + Regression feature
+Adoption_Score_Raw,"Composite adoption propensity score (continuous, noisy)",Numeric,—,Intermediate target for regression
