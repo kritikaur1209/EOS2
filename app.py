@@ -7,18 +7,9 @@
 import warnings
 warnings.filterwarnings("ignore")
 
-# ── Standard library ─────────────────────────────────────────
-import os
-import io
-
-# ── Core data ────────────────────────────────────────────────
 import pandas as pd
 import numpy as np
-
-# ── Streamlit ────────────────────────────────────────────────
 import streamlit as st
-
-# ── Visualisation ────────────────────────────────────────────
 import plotly.express as px
 import plotly.graph_objects as go
 import matplotlib
@@ -154,6 +145,7 @@ PERSONAS = {
 #  DATA LOADING & PREPROCESSING
 # =============================================================
 def load_data(file_obj=None):
+    import os
     if file_obj is not None:
         return pd.read_csv(file_obj)
     base = os.path.dirname(os.path.abspath(__file__))
@@ -200,6 +192,7 @@ def preprocess(df: pd.DataFrame):
 
 @st.cache_data(show_spinner="📂 Loading dataset…")
 def cached_load(file_bytes):
+    import io
     return load_data(io.BytesIO(file_bytes) if file_bytes else None)
 
 
