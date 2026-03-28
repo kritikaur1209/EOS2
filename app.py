@@ -58,10 +58,17 @@ st.markdown("""
 <style>
 div[data-testid="metric-container"]{
     background:linear-gradient(135deg,#1e2140,#252a45);
-    border:1px solid #3a3f6b;
-    border-radius:12px;padding:14px;}
-button[data-baseweb="tab"]{
-    font-size:13px!important;font-weight:600!important;}
+    border:1px solid #3a3f6b;border-radius:12px;padding:14px;}
+button[data-baseweb="tab"]{font-size:13px!important;font-weight:600!important;}
+.tab-intro{
+    background:#f0f2ff;border-left:5px solid #7c6fcd;
+    border-radius:0 12px 12px 0;padding:16px 20px;
+    margin-bottom:22px;color:#2d2d4e;font-size:14px;line-height:1.75;}
+.tab-intro h4{color:#4a3f8a;margin:0 0 6px 0;font-size:15px;font-weight:700;}
+.stat-chip{
+    display:inline-block;background:rgba(255,255,255,0.55);
+    border-radius:20px;padding:3px 10px;font-size:11px;
+    font-weight:600;margin:3px 3px 3px 0;color:#2d2d4e;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -327,7 +334,14 @@ tabs = st.tabs([
 # ─────────────────────────────────────────────────────────────
 with tabs[0]:
     st.markdown("# 🧠 EmotionOS — Founder's Intelligence Dashboard")
-    st.markdown("*Data-driven GTM strategy engine · Descriptive · Diagnostic · Predictive · Prescriptive*")
+    st.markdown("""
+<div class="tab-intro">
+<h4>👋 Welcome to the EmotionOS GTM Intelligence Dashboard</h4>
+This dashboard analyses survey responses from <b>2,000 global brand professionals</b> to help you make smarter go-to-market decisions for EmotionOS.
+Use it to understand who your potential customers are, what they need, how much they'll pay, and how to win them.
+Navigate through the tabs above — start here for the big picture, then dive deeper into each analytical layer.
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     total      = len(raw_df)
@@ -398,6 +412,15 @@ with tabs[0]:
 # ─────────────────────────────────────────────────────────────
 with tabs[1]:
     st.markdown("# 📊 Descriptive Analysis")
+    st.markdown("""
+<div class="tab-intro">
+<h4>📌 What is Descriptive Analysis?</h4>
+Descriptive analysis answers the question: <b>"What does my market look like right now?"</b>
+It summarises the raw survey data into meaningful patterns — who responded, what tools they use, how much they spend, and which EmotionOS features they want most.
+Think of this as your <b>market reality check</b> before making any strategic decisions.
+Use these charts to identify your largest customer segments, spot feature demand gaps, and understand the budget landscape across different org types and regions.
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     ei_org = (raw_df.groupby("Q2_OrgType")["Q12_EmotionalInsightRating"]
@@ -494,6 +517,15 @@ with tabs[1]:
 # ─────────────────────────────────────────────────────────────
 with tabs[2]:
     st.markdown("# 🔍 Diagnostic Analysis")
+    st.markdown("""
+<div class="tab-intro">
+<h4>📌 What is Diagnostic Analysis?</h4>
+Diagnostic analysis answers: <b>"Why do some brands lean toward EmotionOS and others don't?"</b>
+While descriptive analysis tells you <i>what</i> is happening, diagnostic analysis uncovers the <i>why</i> behind it.
+Here you'll find which factors most strongly drive adoption, what barriers are blocking non-adopters, and how different segments compare head-to-head.
+Use the <b>Segment Comparator</b> to pit any two customer types against each other, and the <b>Crisis Pipeline</b> chart to see how past brand crises correlate with adoption urgency — your hottest leads are often those who've already been burnt.
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     num_c = ["Q12_EmotionalInsightRating","Q_EmotionalDataImportance",
@@ -596,6 +628,16 @@ with tabs[2]:
 # ─────────────────────────────────────────────────────────────
 with tabs[3]:
     st.markdown("# 🤖 Predictive Models")
+    st.markdown("""
+<div class="tab-intro">
+<h4>📌 What is Predictive Analysis?</h4>
+Predictive analysis answers: <b>"Which brands will convert, and how much will they spend?"</b>
+Two machine learning models are trained on the survey data:
+<br>• <b>Classification (Random Forest + Logistic Regression)</b> — predicts whether a brand will adopt EmotionOS (Very Unlikely → Very Likely). Metrics like Accuracy, Precision, Recall, F1-Score and ROC Curves tell you how reliable the model is.
+<br>• <b>Regression (Gradient Boosting + Linear Regression)</b> — predicts the monthly budget a brand will allocate. Metrics like RMSE, MAE and R² measure prediction accuracy.
+<br><br>The <b>Warm Leads table</b> at the bottom ranks all respondents by their predicted adoption probability — your most actionable sales list.
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     rf, lr, sc_cls, imp_cls, Xte, yte, gb, imp_reg, Xlte, ylte, yrte = train_models(data_hash)
@@ -603,7 +645,8 @@ with tabs[3]:
     sub_c, sub_r = st.tabs(["🎯 Classification", "💰 Regression"])
 
     with sub_c:
-        st.markdown("### Model Performance")
+        st.markdown("### 📊 How Well Does the Model Predict Adoption?")
+        st.caption("**Accuracy** = overall correct predictions. **Precision** = when it predicts 'Likely', how often is it right? **Recall** = of all actual 'Likely' brands, how many did it catch? **F1** = balanced score combining Precision and Recall. Values closer to 1.0 are better.")
         rf_p  = rf.predict(Xte)
         lr_p  = lr.predict(sc_cls.transform(Xte))
         rf_pr = rf.predict_proba(Xte)
@@ -691,7 +734,8 @@ with tabs[3]:
         st.dataframe(leads[dcols], use_container_width=True, hide_index=True)
 
     with sub_r:
-        st.markdown("### Model Performance")
+        st.markdown("### 📊 How Accurately Does the Model Predict Budget?")
+        st.caption("**RMSE** = average prediction error in INR (lower is better). **MAE** = average absolute error. **R²** = how much budget variation the model explains (1.0 = perfect, 0 = random). The model uses a log-transform on budget to handle the right-skewed distribution.")
         gb_p    = np.expm1(gb.predict(Xlte))
         yr_vals = np.expm1(ylte.values)
         sc_lr   = StandardScaler()
@@ -750,6 +794,20 @@ with tabs[3]:
 # ─────────────────────────────────────────────────────────────
 with tabs[4]:
     st.markdown("# 🧩 Customer Clustering")
+    st.markdown("""
+<div class="tab-intro">
+<h4>📌 What is Clustering?</h4>
+Clustering is an <b>unsupervised machine learning technique</b> that groups customers together based on how similar they are — without being told the groups in advance.
+Instead of just labelling customers by job title or industry, clustering reveals their <b>underlying mindset and behaviour patterns</b>.
+Two customers might both be "FMCG brands" but belong to completely different clusters — one is a data-forward innovator ready to buy today, the other is a risk-averse laggard who needs 6 months of nurturing.
+<br><br>
+<b>How to read the charts:</b><br>
+• <b>Elbow Curve</b> — as K increases, inertia drops. The "elbow" bend suggests a good K.<br>
+• <b>Silhouette Score</b> — measures how well-separated clusters are (higher = better, max = 1).<br>
+• <b>PCA Scatter</b> — a 2D map of all 2,000 respondents coloured by cluster. Tight groups = well-defined segments.<br>
+• <b>Persona Cards</b> — a human-readable profile of each cluster with GTM strategy recommendations.
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     kr, inertias, sils = compute_elbow(data_hash)
@@ -791,26 +849,137 @@ with tabs[4]:
                          title=f"Customer Clusters in PCA Space (K={k})", opacity=0.65)
     fig_pca.update_traces(marker=dict(size=5))
     st.plotly_chart(_dark(fig_pca, 460), use_container_width=True)
+    st.caption("Each dot = one survey respondent. Colour = cluster they belong to. Dots close together = similar brands. PC1 and PC2 are compressed dimensions capturing the most variance across all 17 clustering variables.")
 
     st.markdown("### 🃏 Cluster Persona Cards")
+    st.markdown("Each card below represents a distinct customer tribe discovered in your data. Use these profiles to tailor your sales pitch, pricing tier, and messaging for each group.")
+
+    # Pastel colour palette per cluster index
+    PASTEL_BG   = ["#fde8e8","#fef3e2","#fefbe2","#e6f4ea","#e3f0ff","#f3e8ff"]
+    PASTEL_ACC  = ["#c0392b","#d35400","#b7950b","#1e8449","#1a5276","#7d3c98"]
+    PASTEL_LBL  = ["#922b21","#a04000","#9a7d0a","#196f3d","#154360","#6c3483"]
+
+    PERSONA_DETAIL = {
+        0: {
+            "icon":"🔴","what_they_are":"Brands that have experienced a PR crisis or negative sentiment spike and felt the business impact. They understand the cost of not monitoring emotions in real time.",
+            "key_traits":["High crisis history","Fast internal decision-making","Moderate team size","Urgency-driven buyers"],
+            "pain_point":"They found out about a brand crisis too late and want to prevent it from happening again.",
+            "best_pitch":"Lead with Crisis Alerts + Emotional Brand Score. Show them the cost of a crisis vs. the cost of EmotionOS.",
+            "pricing_tier":"Growth or Enterprise","sales_cycle":"Short (2–4 weeks)",
+        },
+        1: {
+            "icon":"🟠","what_they_are":"Data-mature organisations with dedicated analytics teams who already use multiple tools. They trust AI and want to upgrade their emotional intelligence layer.",
+            "key_traits":["High data literacy","Strong AI trust","Large analytics teams","Long-term platform buyers"],
+            "pain_point":"Their current tools give them clicks and impressions but not emotional depth. They want to go beyond vanity metrics.",
+            "best_pitch":"Full platform — EBS + Omnichannel Dashboard + Segmentation Engine. Emphasise API access and CRM integrations.",
+            "pricing_tier":"Enterprise (₹2L+/mo)","sales_cycle":"Medium (4–8 weeks)",
+        },
+        2: {
+            "icon":"🟡","what_they_are":"Brands that know emotional analytics is valuable but haven't committed yet. ROI uncertainty is their biggest barrier — they need proof before paying.",
+            "key_traits":["Moderate EI awareness","Budget-conscious","Need case studies","ROI-first decision makers"],
+            "pain_point":"They want emotional insights but can't justify the spend without seeing concrete business outcomes first.",
+            "best_pitch":"Offer a free 14-day emotional brand audit. Show ROI from case studies. Start with Starter plan and build trust.",
+            "pricing_tier":"Starter → Growth upgrade","sales_cycle":"Medium (6–10 weeks)",
+        },
+        3: {
+            "icon":"🟢","what_they_are":"Brands that are digitally aware but slower to adopt new technology. They wait for something to become mainstream before committing.",
+            "key_traits":["Late majority adopters","Price-sensitive","Need peer validation","Low urgency currently"],
+            "pain_point":"They know competitors are getting smarter but aren't sure if now is the right time to invest.",
+            "best_pitch":"Freemium entry point. Focus on simplicity and ease-of-use. Show them which competitors in their space are already using emotion analytics.",
+            "pricing_tier":"Freemium → Starter","sales_cycle":"Long (3–6 months)",
+        },
+        4: {
+            "icon":"🔵","what_they_are":"Marketing and creative agencies that manage multiple brand clients. They want to offer emotional analytics as a service to their clients.",
+            "key_traits":["Agency type","White-label interest","High campaign volume","Reseller potential"],
+            "pain_point":"Their clients ask for emotional insights but agencies have no dedicated tool to deliver it — they rely on gut feel.",
+            "best_pitch":"White-label EmotionOS. Position it as a new revenue stream for the agency. Volume-based pricing per brand managed.",
+            "pricing_tier":"Agency Partner Plan","sales_cycle":"Medium (4–6 weeks)",
+        },
+        5: {
+            "icon":"🟣","what_they_are":"Established brands with high brand awareness and steady marketing budgets. They're not vocal, but they quietly value tools that protect brand equity.",
+            "key_traits":["High brand priority","Low churn risk","Consistent spenders","Need stability & reliability"],
+            "pain_point":"They've invested heavily in brand building and want to protect that equity — they just don't know what's being said emotionally about them.",
+            "best_pitch":"Emphasise brand protection and long-term equity monitoring. Loyalty programme and annual plan with dedicated CSM.",
+            "pricing_tier":"Growth or Enterprise","sales_cycle":"Medium (4–8 weeks)",
+        },
+    }
+
     card_cols = st.columns(min(k, 3))
     for i, cid in enumerate(sorted(raw_aug["Cluster"].unique())):
-        sub = raw_aug[raw_aug["Cluster"] == cid]
+        sub   = raw_aug[raw_aug["Cluster"] == cid]
         nm, desc, tip = PERSONAS.get(int(cid), (f"Cluster {cid}", "Mixed profile", "Analyse further"))
+        detail = PERSONA_DETAIL.get(int(cid), {})
+        bg     = PASTEL_BG[int(cid) % len(PASTEL_BG)]
+        acc    = PASTEL_ACC[int(cid) % len(PASTEL_ACC)]
+        lbl    = PASTEL_LBL[int(cid) % len(PASTEL_LBL)]
+
+        top_org    = sub["Q2_OrgType"].value_counts().idxmax()
+        top_region = sub["Q4_Region"].value_counts().idxmax()
+        adopt_rate = sub["Q24_AdoptionLikelihood"].isin(["Likely","Very Likely"]).mean()*100
+        med_bud_c  = sub["Q23_BudgetINR_Numeric"].median()
+        crisis_r   = sub["Q_CrisisHistory"].isin(["Yes - major business impact","Yes - minor impact"]).mean()*100
+
+        traits_html = "".join([
+            f'<span class="stat-chip">{t}</span>'
+            for t in detail.get("key_traits", [desc])
+        ])
+
         with card_cols[i % 3]:
             st.markdown(f"""
-<div style="background:linear-gradient(135deg,#1e2140,#252a45);
-border:1px solid #3a3f6b;border-radius:14px;padding:14px;margin-bottom:10px;">
-<h4 style="color:#e8eaf6;margin:0 0 4px">{nm}</h4>
-<p style="color:#9e9ec0;font-size:11px;margin:0 0 6px">{desc}</p>
-<b style="color:#ffd740">N={len(sub):,}</b> ·
-<b style="color:#69f0ae">₹{sub["Q23_BudgetINR_Numeric"].median():,.0f}/mo</b><br/>
-<small style="color:#9e9ec0">
-Top org: {sub["Q2_OrgType"].value_counts().idxmax()}<br/>
-Adopt rate: {sub["Q24_AdoptionLikelihood"].isin(["Likely","Very Likely"]).mean()*100:.1f}%
-</small>
-<hr style="border-color:#3a3f6b;margin:6px 0"/>
-<small style="color:#80cbc4">💡 {tip}</small></div>
+<div style="background:{bg};border-radius:18px;padding:20px 18px;
+margin-bottom:16px;box-shadow:0 4px 16px rgba(0,0,0,0.10);">
+
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+    <span style="font-size:26px">{detail.get('icon','🔵')}</span>
+    <h3 style="color:{acc};margin:0;font-size:17px;font-weight:800;line-height:1.2">
+      {nm.split(' ',1)[1] if ' ' in nm else nm}
+    </h3>
+  </div>
+
+  <p style="color:#3d3d5c;font-size:12.5px;margin:0 0 10px;line-height:1.6;">
+    {detail.get('what_they_are', desc)}
+  </p>
+
+  <div style="margin-bottom:10px;">{traits_html}</div>
+
+  <div style="background:rgba(255,255,255,0.55);border-radius:10px;padding:10px 12px;margin-bottom:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <div><span style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Respondents</span><br>
+           <b style="color:{lbl};font-size:16px">{len(sub):,}</b></div>
+      <div><span style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Median Budget</span><br>
+           <b style="color:{lbl};font-size:16px">₹{med_bud_c:,.0f}/mo</b></div>
+      <div><span style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Adopt Rate</span><br>
+           <b style="color:{lbl};font-size:16px">{adopt_rate:.1f}%</b></div>
+      <div><span style="color:#666;font-size:10px;text-transform:uppercase;letter-spacing:.5px">Had Crisis</span><br>
+           <b style="color:{lbl};font-size:16px">{crisis_r:.1f}%</b></div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#555">
+      📍 Top org: <b>{top_org}</b> &nbsp;|&nbsp; 🌍 Top region: <b>{top_region}</b>
+    </div>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.4);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+    <span style="font-size:10px;color:#666;font-weight:600;text-transform:uppercase">😟 Pain Point</span><br>
+    <span style="font-size:12px;color:#3d3d5c">{detail.get('pain_point','—')}</span>
+  </div>
+
+  <div style="background:rgba(255,255,255,0.4);border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+    <span style="font-size:10px;color:#666;font-weight:600;text-transform:uppercase">🎯 Best Pitch</span><br>
+    <span style="font-size:12px;color:#3d3d5c">{detail.get('best_pitch', tip)}</span>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+    <div style="background:rgba(255,255,255,0.5);border-radius:8px;padding:5px 10px;flex:1;min-width:100px;">
+      <span style="font-size:10px;color:#666">💳 Pricing Tier</span><br>
+      <b style="font-size:11px;color:{acc}">{detail.get('pricing_tier','—')}</b>
+    </div>
+    <div style="background:rgba(255,255,255,0.5);border-radius:8px;padding:5px 10px;flex:1;min-width:100px;">
+      <span style="font-size:10px;color:#666">⏱ Sales Cycle</span><br>
+      <b style="font-size:11px;color:{acc}">{detail.get('sales_cycle','—')}</b>
+    </div>
+  </div>
+
+</div>
 """, unsafe_allow_html=True)
 
     csv_cl = raw_aug.to_csv(index=False).encode("utf-8")
@@ -822,6 +991,22 @@ Adopt rate: {sub["Q24_AdoptionLikelihood"].isin(["Likely","Very Likely"]).mean()
 # ─────────────────────────────────────────────────────────────
 with tabs[5]:
     st.markdown("# 🔗 Association Rule Mining")
+    st.markdown("""
+<div class="tab-intro">
+<h4>📌 What is Association Rule Mining?</h4>
+Association Rule Mining (ARM) discovers <b>hidden co-occurrence patterns</b> in the data — things that tend to appear together more than you'd expect by chance.
+Think of it like a smart "customers who bought X also bought Y" engine, applied to brand behaviour and feature preferences.
+<br><br>
+<b>Three analyses run here:</b><br>
+• <b>Feature Bundle Mining</b> — which EmotionOS features are always requested together? This drives your pricing tiers and bundle design.<br>
+• <b>Pain Point → Feature</b> — do brands with specific pain points systematically want specific features? This validates your product-market fit story.<br>
+• <b>Data Source → Channel</b> — if a brand already uses certain data sources, which monitoring channels do they want? This shapes your integration roadmap.<br><br>
+<b>How to read the metrics:</b><br>
+• <b>Support</b> = how often this combination appears (e.g. 0.30 = 30% of respondents)<br>
+• <b>Confidence</b> = if someone wants A, how likely are they to also want B? (e.g. 0.75 = 75% of the time)<br>
+• <b>Lift</b> = how much more likely than random chance? (Lift > 1 = positive, Lift > 2 = strong association)
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     if not MLXTEND_OK:
@@ -940,8 +1125,18 @@ with tabs[5]:
 # ─────────────────────────────────────────────────────────────
 with tabs[6]:
     st.markdown("# 🚀 New Client Predictor")
-    st.markdown("Upload a CSV **or** fill the quick form → instant adoption prediction, "
-                "budget forecast, cluster assignment & personalised strategy card.")
+    st.markdown("""
+<div class="tab-intro">
+<h4>📌 What is the New Client Predictor?</h4>
+This is the <b>prescriptive layer</b> of the dashboard — it doesn't just analyse the past, it tells you what to <i>do next</i>.
+Upload a CSV of new potential client brands (or fill in the quick form below) and the system will instantly:<br>
+• <b>Predict adoption likelihood</b> — Very Unlikely to Very Likely, with probability scores<br>
+• <b>Forecast monthly budget</b> — how much this brand is likely to spend on EmotionOS<br>
+• <b>Assign a cluster</b> — which customer tribe does this brand belong to?<br>
+• <b>Generate a Sales Strategy Card</b> — which tier to pitch, which features to lead with, urgency score, and recommended approach<br><br>
+This is your <b>live sales intelligence tool</b> — use it before every sales call to walk in fully prepared.
+</div>
+""", unsafe_allow_html=True)
     st.divider()
 
     @st.cache_resource(show_spinner="🔧 Preparing predictor…")
